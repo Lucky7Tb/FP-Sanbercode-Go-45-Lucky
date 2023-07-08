@@ -12,6 +12,11 @@ DB_PASSWORD=mysql
 *.dll
 *.so
 *.dylib
+*.o
+*.a
+**/*
+!**/*.go
+!**/
 
 # Test binary, built with `go test -c`
 *.test
