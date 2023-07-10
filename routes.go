@@ -2,6 +2,7 @@ package main
 
 import (
 	"tulisaja/controller"
+	"tulisaja/middleware"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -12,44 +13,47 @@ import (
 
 func setupRouter(db *gorm.DB) *gin.Engine {
 	router := gin.Default()
+	router.Use(gin.ErrorLogger())
+	router.Use(gin.Recovery())
+	router.SetTrustedProxies([]string{"127.0.0.1"})
 	router.Use(func(c *gin.Context) {
 		c.Set("db", db)
 	})
 
-	router.Group("/api")
+	baseRouter := router.Group("/api")
 	{
-		router.Group("/auth")
+		authRoute := baseRouter.Group("/auth")
 		{
-			router.POST("/login", controller.Login)
-			router.POST("/register", controller.Register)
+			authRoute.POST("/login", controller.Login)
+			authRoute.POST("/register", controller.Register)
 		}
 
-		router.Group("/profile")
+		profileRoute := baseRouter.Group("/profile")
 		{
-			router.GET("/", controller.GetProfile)
-			router.POST("/change-password", controller.ChangePassword)
+			profileRoute.GET("/", middleware.VerifyJwtToken(), controller.GetProfile)
+			profileRoute.POST("/change-password", controller.ChangePassword)
 		}
 
-		router.Group("/articles")
+		articleRoute := baseRouter.Group("/articles")
 		{
-			router.GET("/", controller.GetRandomArticles)
-			router.GET("/:username", controller.GetArticles)
-			router.GET("/:username/:id", controller.GetArticle)
-			router.POST("/", controller.CreateArticle)
-			router.POST("/:username/:id/comment", controller.CommentArticle)
-			router.POST("/:username/:id/like", controller.LikeArticle)
-			router.PUT("/:id", controller.UpdateArticle)
-			router.DELETE("/:id", controller.DeleteArticle)
+			articleRoute.GET("/", controller.GetRandomArticles)
+			articleRoute.GET("/:username", controller.GetArticles)
+			articleRoute.GET("/:username/:id", controller.GetArticle)
+			articleRoute.POST("/", controller.CreateArticle)
+			articleRoute.POST("/:username/:id/comment", controller.CommentArticle)
+			articleRoute.POST("/:username/:id/like", controller.LikeArticle)
+			articleRoute.PUT("/:id", controller.UpdateArticle)
+			articleRoute.DELETE("/:id", controller.DeleteArticle)
 		}
 
-		router.Group("/following")
+		followingRouter := baseRouter.Group("/following")
 		{
-			router.GET("/", controller.GetFollowingUser)
-			router.POST("/", controller.FollowUser)
-			router.DELETE("/:id", controller.DeleteFollowingUser)
+			followingRouter.GET("/", controller.GetFollowingUser)
+			followingRouter.POST("/", controller.FollowUser)
+			followingRouter.DELETE("/:id", controller.DeleteFollowingUser)
 		}
 
-		router.GET("/followers", controller.GetFollowers)
+		baseRouter.GET("/followers", controller.GetFollowers)
 	}
 
 	router.GET("/api/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

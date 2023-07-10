@@ -1,4 +1,77 @@
+definitions:
+  auth.LoginInput:
+    properties:
+      password:
+        type: string
+      user_name:
+        type: string
+    required:
+    - password
+    - user_name
+    type: object
+  auth.RegisterInput:
+    properties:
+      full_name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      password_confirm:
+        type: string
+      user_name:
+        type: string
+    required:
+    - full_name
+    - password
+    - password_confirm
+    - user_name
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /auth/login:
+    post:
+      parameters:
+      - description: the body to login
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginInput'
+      produces:
+      - application/json
+      responses: {}
+      summary: Login.
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      parameters:
+      - description: the body to register
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterInput'
+      produces:
+      - application/json
+      responses: {}
+      summary: Register.
+      tags:
+      - Auth
+  /profile:
+    get:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      tags:
+      - Profile
 swagger: "2.0"

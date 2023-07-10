@@ -7,15 +7,9 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-
-	"github.com/joho/godotenv"
 )
 
 func ConnectDataBase() *gorm.DB {
-	err := godotenv.Load()
-	if err != nil {
-		panic("Error loading .env file")
-	}
 	username := os.Getenv("DB_USERNAME")
 	password := os.Getenv("DB_PASSWORD")
 	host := "tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")"
