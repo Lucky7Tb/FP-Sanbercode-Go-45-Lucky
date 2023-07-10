@@ -31,7 +31,7 @@ func setupRouter(db *gorm.DB) *gin.Engine {
 		profileRoute := baseRouter.Group("/profile")
 		{
 			profileRoute.GET("/", middleware.VerifyJwtToken(), controller.GetProfile)
-			profileRoute.POST("/change-password", controller.ChangePassword)
+			profileRoute.POST("/change-password", middleware.VerifyJwtToken(), controller.ChangePassword)
 		}
 
 		articleRoute := baseRouter.Group("/articles")
@@ -39,21 +39,21 @@ func setupRouter(db *gorm.DB) *gin.Engine {
 			articleRoute.GET("/", controller.GetRandomArticles)
 			articleRoute.GET("/:username", controller.GetArticles)
 			articleRoute.GET("/:username/:id", controller.GetArticle)
-			articleRoute.POST("/", controller.CreateArticle)
-			articleRoute.POST("/:username/:id/comment", controller.CommentArticle)
-			articleRoute.POST("/:username/:id/like", controller.LikeArticle)
-			articleRoute.PUT("/:id", controller.UpdateArticle)
-			articleRoute.DELETE("/:id", controller.DeleteArticle)
+			articleRoute.POST("/", middleware.VerifyJwtToken(), controller.CreateArticle)
+			articleRoute.POST("/:username/:id/comment", middleware.VerifyJwtToken(), controller.CommentArticle)
+			articleRoute.POST("/:username/:id/like", middleware.VerifyJwtToken(), controller.LikeArticle)
+			articleRoute.PUT("/:id", middleware.VerifyJwtToken(), controller.UpdateArticle)
+			articleRoute.DELETE("/:id", middleware.VerifyJwtToken(), controller.DeleteArticle)
 		}
 
 		followingRouter := baseRouter.Group("/following")
 		{
-			followingRouter.GET("/", controller.GetFollowingUser)
-			followingRouter.POST("/", controller.FollowUser)
-			followingRouter.DELETE("/:id", controller.DeleteFollowingUser)
+			followingRouter.GET("/", middleware.VerifyJwtToken(), controller.GetFollowingUser)
+			followingRouter.POST("/", middleware.VerifyJwtToken(), controller.FollowUser)
+			followingRouter.DELETE("/:id", middleware.VerifyJwtToken(), controller.DeleteFollowingUser)
 		}
 
-		baseRouter.GET("/followers", controller.GetFollowers)
+		baseRouter.GET("/followers", middleware.VerifyJwtToken(), controller.GetFollowers)
 	}
 
 	router.GET("/api/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

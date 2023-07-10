@@ -26,6 +26,20 @@ definitions:
     - password_confirm
     - user_name
     type: object
+  profile.ChangePasswordInput:
+    properties:
+      old_password:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      password_confirm:
+        type: string
+    required:
+    - old_password
+    - password
+    - password_confirm
+    type: object
 info:
   contact: {}
 paths:
@@ -72,6 +86,28 @@ paths:
       responses: {}
       security:
       - BearerToken: []
+      tags:
+      - Profile
+  /profile/change-password:
+    post:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: the body to change password
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/profile.ChangePasswordInput'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Change password user.
       tags:
       - Profile
 swagger: "2.0"
