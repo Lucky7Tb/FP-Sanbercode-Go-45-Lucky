@@ -4,6 +4,114 @@
         "contact": {}
     },
     "paths": {
+        "/articles": {
+            "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Create article.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "the body to create article",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article.SaveArticleInput"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/articles/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Update article.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "the body to update article",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article.SaveArticleInput"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Article id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Delete article.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Article id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/auth/login": {
             "post": {
                 "produces": [
@@ -112,6 +220,17 @@
         }
     },
     "definitions": {
+        "article.SaveArticleInput": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
         "auth.LoginInput": {
             "type": "object",
             "required": [

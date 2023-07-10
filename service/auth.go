@@ -46,7 +46,7 @@ func Login(db *gorm.DB, input requestinput.LoginInput) (string, error) {
 func Register(db *gorm.DB, input requestinput.RegisterInput) error {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 10)
 	if err != nil {
-		return errors.New("Failed generate password")
+		return errors.New("failed generate password")
 	}
 	db.Create(&models.User{Username: input.Username, Password: string(hashPassword), FullName: input.Fullname})
 	return nil

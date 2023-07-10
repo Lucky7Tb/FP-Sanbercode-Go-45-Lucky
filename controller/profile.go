@@ -39,13 +39,13 @@ func GetProfile(c *gin.Context) {
 //	@Summary	Change password user.
 //	@Tags		Profile
 //
-// @Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
-// @Security	BearerToken
+//	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+//	@Security	BearerToken
 //
-// @Param		Body	body	requestinput.ChangePasswordInput	true	"the body to change password"
+//	@Param		Body	body	requestinput.ChangePasswordInput	true	"the body to change password"
 //
-// @Produce	json
-// @Router		/profile/change-password [post]
+//	@Produce	json
+//	@Router		/profile/change-password [post]
 func ChangePassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 

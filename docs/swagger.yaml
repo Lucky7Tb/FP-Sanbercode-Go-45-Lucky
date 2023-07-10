@@ -1,4 +1,11 @@
 definitions:
+  article.SaveArticleInput:
+    properties:
+      content:
+        type: string
+    required:
+    - content
+    type: object
   auth.LoginInput:
     properties:
       password:
@@ -43,6 +50,75 @@ definitions:
 info:
   contact: {}
 paths:
+  /articles:
+    post:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: the body to create article
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/article.SaveArticleInput'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Create article.
+      tags:
+      - Articles
+  /articles/{id}:
+    delete:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Article id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Delete article.
+      tags:
+      - Articles
+    put:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: the body to update article
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/article.SaveArticleInput'
+      - description: Article id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Update article.
+      tags:
+      - Articles
   /auth/login:
     post:
       parameters:
