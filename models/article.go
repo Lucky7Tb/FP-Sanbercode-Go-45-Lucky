@@ -7,7 +7,7 @@ type Article struct {
 	Content   string    `json:"content,omitempty"`
 	User      *User     `json:"user,omitempty"`
 	Comment   []Comment `json:"comment,omitempty"`
-	Likes     []Like    `json:"like,omitempty"`
+	Likes     int       `json:"like"`
 	CreatedAt string    `json:"created_at,omitempty"`
 	UpdatedAt string    `json:"updated_at,omitempty"`
 }

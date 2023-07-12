@@ -13,9 +13,9 @@ type Filters struct {
 	Page  int
 }
 
-func GetRandomArticles(db *gorm.DB, filters Filters) ([]models.Article, error) {
+func GetRandomArticles(db *gorm.DB) ([]models.Article, error) {
 	var randomArticles []models.Article
-	err := db.Select("id", "username").Order("RAND()").Limit(filters.Limit).Offset((filters.Page-1)*filters.Limit).Preload("User", func(tx *gorm.DB) *gorm.DB {
+	err := db.Select("id", "title").Order("RAND()").Limit(100).Preload("User", func(tx *gorm.DB) *gorm.DB {
 		return tx.Select("id", "username")
 	}).Find(&randomArticles).Error
 
@@ -43,8 +43,30 @@ func GetArticles(db *gorm.DB, filters Filters, username string) ([]models.Articl
 	return articles, nil
 }
 
-func GetArticle(db *gorm.DB) {
+func GetArticle(db *gorm.DB, username string, articleId int) (*models.Article, error) {
+	var article models.Article
+	var user models.User
+	var articleLikes int64
 
+	if err := db.Select("id").Where("username = ?", username).Find(&user).Error; err != nil {
+		return nil, errors.New("username not found")
+	}
+
+	if err := db.Select("id", "title", "content").Where("id = ? AND user_id = ?", articleId, user.ID).Preload("Comment", func(tx *gorm.DB) *gorm.DB {
+		return tx.Select("user_id", "article_id", "comment")
+	}).Preload("Comment.User", func(tx *gorm.DB) *gorm.DB {
+		return tx.Select("id", "username")
+	}).Find(&article).Error; err != nil {
+		return nil, err
+	}
+
+	if err := db.Model(&models.Like{}).Where("article_id = ?", articleId).Count(&articleLikes).Error; err != nil {
+		return nil, err
+	}
+
+	article.Likes = int(articleLikes)
+
+	return &article, nil
 }
 
 func CreateArticle(db *gorm.DB, input requestinput.SaveArticleInput, userId interface{}) error {

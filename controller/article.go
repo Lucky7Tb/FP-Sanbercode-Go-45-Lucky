@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -21,31 +20,12 @@ import (
 //	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
 //	@Security	BearerToken
 //
-//	@Param		limit	query	int	false	"Limit returning value"
-//	@Param		page	query	int	false	"Paging"
 //	@Produce	json
 //	@Router		/articles [get]
 func GetRandomArticles(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	var limit int = 10
-	var page int = 1
 
-	if match, _ := regexp.MatchString("[0-9]", "peach"); c.Query("limit") != "" && match {
-		v, _ := strconv.Atoi(c.Query("limit"))
-		limit = v
-	}
-
-	if match, _ := regexp.MatchString("[0-9]", "peach"); c.Query("page") != "" && match {
-		v, _ := strconv.Atoi(c.Query("page"))
-		page = v
-	}
-
-	filters := service.Filters{
-		Limit: limit,
-		Page:  page,
-	}
-
-	articles, err := service.GetRandomArticles(db, filters)
+	articles, err := service.GetRandomArticles(db)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status_code": http.StatusInternalServerError, "messsage": "Failed get articles"})
 		return
@@ -73,14 +53,13 @@ func GetArticles(c *gin.Context) {
 	var limit int = 10
 	var page int = 1
 	var username = c.Param("username")
-	fmt.Println(username)
 
-	if match, _ := regexp.MatchString("[0-9]", "peach"); c.Query("limit") != "" && match {
+	if match, _ := regexp.MatchString("[0-9]", strconv.Itoa(limit)); c.Query("limit") != "" && match {
 		v, _ := strconv.Atoi(c.Query("limit"))
 		limit = v
 	}
 
-	if match, _ := regexp.MatchString("[0-9]", "peach"); c.Query("page") != "" && match {
+	if match, _ := regexp.MatchString("[0-9]", strconv.Itoa(page)); c.Query("page") != "" && match {
 		v, _ := strconv.Atoi(c.Query("page"))
 		page = v
 	}
@@ -106,8 +85,46 @@ func GetArticles(c *gin.Context) {
 	return
 }
 
+// Get detail article godoc
+//
+//	@Summary	Get detail article.
+//	@Tags		Articles
+//
+//	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+//	@Security	BearerToken
+//
+//	@Param		username	path	string	true	"user username"
+//	@Param		id			path	int		true	"user username"
+//	@Produce	json
+//	@Router		/articles/{username}/{id} [get]
 func GetArticle(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var username = c.Param("username")
+	var articleId = c.Param("id")
 
+	if match, _ := regexp.MatchString("[0-9]", articleId); !match {
+		c.JSON(http.StatusNotFound, gin.H{"status_code": http.StatusNotFound, "messsage": "Internal server error"})
+		return
+	}
+
+	v, err := strconv.Atoi(articleId)
+	article, err := service.GetArticle(db, username, v)
+	if err != nil {
+		switch err.Error() {
+		case "not found":
+			c.JSON(http.StatusNotFound, gin.H{"status_code": http.StatusNotFound, "messsage": "Username not found"})
+			return
+		case "record not found":
+			c.JSON(http.StatusNotFound, gin.H{"status_code": http.StatusNotFound, "messsage": "Article not found"})
+			return
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"status_code": http.StatusInternalServerError, "messsage": "Internal server error"})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status_code": http.StatusOK, "messsage": "Success to get article", "data": article})
+	return
 }
 
 // Create Article godoc

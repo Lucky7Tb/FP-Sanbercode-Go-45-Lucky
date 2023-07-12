@@ -61,14 +61,6 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Limit returning value
-        in: query
-        name: limit
-        type: integer
-      - description: Paging
-        in: query
-        name: page
-        type: integer
       produces:
       - application/json
       responses: {}
@@ -172,6 +164,32 @@ paths:
       security:
       - BearerToken: []
       summary: Get user article.
+      tags:
+      - Articles
+  /articles/{username}/{id}:
+    get:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: user username
+        in: path
+        name: username
+        required: true
+        type: string
+      - description: user username
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Get detail article.
       tags:
       - Articles
   /auth/login:
