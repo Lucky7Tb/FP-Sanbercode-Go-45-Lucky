@@ -3,8 +3,11 @@ definitions:
     properties:
       content:
         type: string
+      title:
+        type: string
     required:
     - content
+    - title
     type: object
   auth.LoginInput:
     properties:
@@ -51,6 +54,29 @@ info:
   contact: {}
 paths:
   /articles:
+    get:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Limit returning value
+        in: query
+        name: limit
+        type: integer
+      - description: Paging
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Get random article.
+      tags:
+      - Articles
     post:
       parameters:
       - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
@@ -117,6 +143,35 @@ paths:
       security:
       - BearerToken: []
       summary: Update article.
+      tags:
+      - Articles
+  /articles/{username}:
+    get:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Limit returning value
+        in: query
+        name: limit
+        type: integer
+      - description: Paging
+        in: query
+        name: page
+        type: integer
+      - description: user username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Get user article.
       tags:
       - Articles
   /auth/login:

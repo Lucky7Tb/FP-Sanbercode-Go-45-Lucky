@@ -1,9 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
 type User struct {
 	ID        uint       `json:"id,omitempty" gorm:"primary_key"`
 	FullName  string     `json:"full_name,omitempty"`
@@ -11,6 +7,6 @@ type User struct {
 	Password  string     `json:"-"`
 	Article   []Article  `json:"article,omitempty"`
 	Followers []Follower `json:"followers,omitempty"`
-	CreatedAt time.Time  `json:"created_at,omitempty"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty"`
+	CreatedAt string     `json:"created_at,omitempty"`
+	UpdatedAt string     `json:"updated_at,omitempty"`
 }
