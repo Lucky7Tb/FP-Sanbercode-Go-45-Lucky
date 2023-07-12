@@ -76,10 +76,9 @@ func CreateArticle(db *gorm.DB, input requestinput.SaveArticleInput, userId inte
 
 func UpdateArticle(db *gorm.DB, input requestinput.SaveArticleInput, articleId int, userId interface{}) error {
 	var article models.Article
-	result := db.Where("id = ?", articleId).First(&article)
 
-	if result.Error != nil {
-		return result.Error
+	if err := db.Where("id = ?", articleId).First(&article).Error; err != nil {
+		return err
 	}
 
 	var id = uint(userId.(float64))
@@ -92,10 +91,9 @@ func UpdateArticle(db *gorm.DB, input requestinput.SaveArticleInput, articleId i
 
 func DeleteArticle(db *gorm.DB, articleId int, userId interface{}) error {
 	var article models.Article
-	result := db.Where("id = ?", articleId).First(&article)
 
-	if result.Error != nil {
-		return result.Error
+	if err := db.Where("id = ?", articleId).First(&article).Error; err != nil {
+		return err
 	}
 
 	var id = uint(userId.(float64))
@@ -106,8 +104,17 @@ func DeleteArticle(db *gorm.DB, articleId int, userId interface{}) error {
 	return db.Delete(&article).Error
 }
 
-func CommentArticle(db *gorm.DB) {
+func CommentArticle(db *gorm.DB, articleId int, username string, input requestinput.CommentInput) error {
+	var user models.User
+	if err := db.Select("id").Where("username = ?", username).Find(&user).Error; err != nil {
+		return errors.New("not found")
+	}
 
+	if err := db.Select("id").Where("id = ? AND user_id = ?", articleId, user.ID).First(&models.Article{}).Error; err != nil {
+		return err
+	}
+
+	return db.Create(&models.Comment{ArticleId: uint(articleId), UserId: uint(input.UserID), Comment: input.Comment}).Error
 }
 
 func LikeArticle(db *gorm.DB) {

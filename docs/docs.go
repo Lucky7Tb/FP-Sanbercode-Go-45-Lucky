@@ -233,6 +233,55 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/articles/{username}/{id}/comment": {
+            "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Comment article.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user username",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Article id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "the body to comment an article",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article.CommentInput"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/auth/login": {
             "post": {
                 "produces": [
@@ -341,6 +390,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "article.CommentInput": {
+            "type": "object",
+            "required": [
+                "comment"
+            ],
+            "properties": {
+                "comment": {
+                    "type": "string"
+                }
+            }
+        },
         "article.SaveArticleInput": {
             "type": "object",
             "required": [
