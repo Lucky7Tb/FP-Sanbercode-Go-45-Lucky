@@ -231,6 +231,32 @@ paths:
       summary: Comment article.
       tags:
       - Articles
+  /articles/{username}/{id}/like:
+    post:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: user username
+        in: path
+        name: username
+        required: true
+        type: string
+      - description: Article id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Likes article.
+      tags:
+      - Articles
   /auth/login:
     post:
       parameters:

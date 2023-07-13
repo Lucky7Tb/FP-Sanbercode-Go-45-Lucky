@@ -254,10 +254,10 @@ func DeleteArticle(c *gin.Context) {
 //	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
 //	@Security	BearerToken
 //
-//	@Param		username	path	string	true	"user username"
-//	@Param		id			path	int		true	"Article id"
+//	@Param		username	path	string						true	"user username"
+//	@Param		id			path	int							true	"Article id"
 //
-//	@Param		Body	body	requestinput.CommentInput	true	"the body to comment an article"
+//	@Param		Body		body	requestinput.CommentInput	true	"the body to comment an article"
 //	@Produce	json
 //	@Router		/articles/{username}/{id}/comment [post]
 func CommentArticle(c *gin.Context) {
@@ -297,6 +297,44 @@ func CommentArticle(c *gin.Context) {
 	return
 }
 
+// Likes Article godoc
+//
+//	@Summary	Likes article.
+//	@Tags		Articles
+//
+//	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+//	@Security	BearerToken
+//
+//	@Param		username	path	string	true	"user username"
+//	@Param		id			path	int		true	"Article id"
+//
+//	@Produce	json
+//	@Router		/articles/{username}/{id}/like [post]
 func LikeArticle(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var username = c.Param("username")
+	var tmpArticleId = c.Param("id")
 
+	if match, _ := regexp.MatchString("[0-9]", tmpArticleId); !match {
+		c.JSON(http.StatusNotFound, gin.H{"status_code": http.StatusNotFound, "messsage": "Article not found"})
+		return
+	}
+
+	artileId, _ := strconv.Atoi(tmpArticleId)
+	if err := service.LikeArticle(db, artileId, username); err != nil {
+		switch err.Error() {
+		case "not found":
+			c.JSON(http.StatusNotFound, gin.H{"status_code": http.StatusNotFound, "messsage": "Username not found"})
+			return
+		case "record not found":
+			c.JSON(http.StatusNotFound, gin.H{"status_code": http.StatusNotFound, "messsage": "Article not found"})
+			return
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"status_code": http.StatusInternalServerError, "messsage": "Failed"})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status_code": http.StatusOK, "messsage": "Success like on article"})
+	return
 }

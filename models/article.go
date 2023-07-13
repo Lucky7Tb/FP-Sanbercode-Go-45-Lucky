@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Article struct {
 	ID        uint      `json:"id,omitempty" gorm:"primary_key"`
 	UserId    uint      `json:"user_id,omitempty"`
@@ -7,7 +9,7 @@ type Article struct {
 	Content   string    `json:"content,omitempty"`
 	User      *User     `json:"user,omitempty"`
 	Comment   []Comment `json:"comment,omitempty"`
-	Likes     int       `json:"like"`
-	CreatedAt string    `json:"created_at,omitempty"`
-	UpdatedAt string    `json:"updated_at,omitempty"`
+	Likes     int       `json:"like" gorm:"-"`
+	CreatedAt time.Time `json:"-" gorm:"default:CURRENT_TIMESTAMP()"`
+	UpdatedAt time.Time `json:"-" gorm:"default:CURRENT_TIMESTAMP()"`
 }

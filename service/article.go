@@ -46,7 +46,7 @@ func GetArticles(db *gorm.DB, filters Filters, username string) ([]models.Articl
 func GetArticle(db *gorm.DB, username string, articleId int) (*models.Article, error) {
 	var article models.Article
 	var user models.User
-	var articleLikes int64
+	var articleLikes models.Like
 
 	if err := db.Select("id").Where("username = ?", username).Find(&user).Error; err != nil {
 		return nil, errors.New("username not found")
@@ -60,11 +60,11 @@ func GetArticle(db *gorm.DB, username string, articleId int) (*models.Article, e
 		return nil, err
 	}
 
-	if err := db.Model(&models.Like{}).Where("article_id = ?", articleId).Count(&articleLikes).Error; err != nil {
+	if err := db.Model(&articleLikes).Where("article_id = ?", articleId).Error; err != nil {
 		return nil, err
 	}
 
-	article.Likes = int(articleLikes)
+	article.Likes = int(articleLikes.Counter)
 
 	return &article, nil
 }
@@ -117,6 +117,27 @@ func CommentArticle(db *gorm.DB, articleId int, username string, input requestin
 	return db.Create(&models.Comment{ArticleId: uint(articleId), UserId: uint(input.UserID), Comment: input.Comment}).Error
 }
 
-func LikeArticle(db *gorm.DB) {
+func LikeArticle(db *gorm.DB, articleId int, username string) error {
+	var user models.User
+	var article models.Article
+	var articleLike models.Like
 
+	if err := db.Select("id").Where("username = ?", username).Find(&user).Error; err != nil {
+		return errors.New("not found")
+	}
+
+	if err := db.Select("id").Where("id = ? AND user_id = ?", articleId, user.ID).First(&article).Error; err != nil {
+		return err
+	}
+
+	if err := db.Where("article_id = ?", articleId).First(&articleLike).Error; err != nil {
+		if err.Error() == "record not found" {
+			return db.Create(&models.Like{ArticleId: uint(articleId), Counter: 1}).Error
+		}
+
+		return err
+	} else {
+		articleLike.Counter += 1
+		return db.Save(&articleLike).Error
+	}
 }
