@@ -43,6 +43,11 @@ definitions:
     - password_confirm
     - user_name
     type: object
+  following.FollowUserInput:
+    properties:
+      username:
+        type: string
+    type: object
   profile.ChangePasswordInput:
     properties:
       old_password:
@@ -287,6 +292,64 @@ paths:
       summary: Register.
       tags:
       - Auth
+  /following:
+    get:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Get following user.
+      tags:
+      - Following
+    post:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: the body to follow a user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/following.FollowUserInput'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Follow a user.
+      tags:
+      - Following
+  /following/{id}:
+    delete:
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Following id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerToken: []
+      summary: Delete a following user.
+      tags:
+      - Following
   /profile:
     get:
       parameters:

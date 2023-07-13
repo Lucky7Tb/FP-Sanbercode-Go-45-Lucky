@@ -39,9 +39,6 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// var data = map[string]any{
-	// 	"token": token,
-	// }
 	c.JSON(http.StatusOK, gin.H{"status_code": http.StatusOK, "messsage": "Success login", "data": token})
 	return
 }
