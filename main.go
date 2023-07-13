@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	docs.SwaggerInfo.Title = "Tulisaja api documentation"
+	docs.SwaggerInfo.Title = "Tulisaja api"
 	docs.SwaggerInfo.Description = "Api documentation for tulisaja app"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:3000"
