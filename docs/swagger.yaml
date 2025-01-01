@@ -67,17 +67,9 @@ info:
 paths:
   /articles:
     get:
-      parameters:
-      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses: {}
-      security:
-      - BearerToken: []
       summary: Get random article.
       tags:
       - Articles
@@ -152,11 +144,6 @@ paths:
   /articles/{username}:
     get:
       parameters:
-      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Limit returning value
         in: query
         name: limit
@@ -173,19 +160,12 @@ paths:
       produces:
       - application/json
       responses: {}
-      security:
-      - BearerToken: []
       summary: Get user article.
       tags:
       - Articles
   /articles/{username}/{id}:
     get:
       parameters:
-      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: user username
         in: path
         name: username
@@ -199,8 +179,6 @@ paths:
       produces:
       - application/json
       responses: {}
-      security:
-      - BearerToken: []
       summary: Get detail article.
       tags:
       - Articles

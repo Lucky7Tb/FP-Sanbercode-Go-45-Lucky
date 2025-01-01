@@ -87,7 +87,7 @@ func FollowUser(c *gin.Context) {
 //
 //	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
 //	@Security	BearerToken
-//	@Param		id			path	int		true	"Following id"
+//	@Param		id	path	int	true	"Following id"
 //
 //
 //	@Produce	json

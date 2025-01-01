@@ -43,7 +43,6 @@ func setupRouter(db *gorm.DB) *gin.Engine {
 			articleRoute.POST("/:username/:id/comment", middleware.VerifyJwtToken(), controller.CommentArticle)
 			articleRoute.POST("/:username/:id/like", middleware.VerifyJwtToken(), controller.LikeArticle)
 			articleRoute.PUT("/:id", middleware.VerifyJwtToken(), controller.UpdateArticle)
-			articleRoute.DELETE("/:id", middleware.VerifyJwtToken(), controller.DeleteArticle)
 		}
 
 		followingRouter := baseRouter.Group("/following")

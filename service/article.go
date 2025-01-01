@@ -15,7 +15,7 @@ type Filters struct {
 
 func GetRandomArticles(db *gorm.DB) ([]models.Article, error) {
 	var randomArticles []models.Article
-	err := db.Select("id", "title").Order("RAND()").Limit(100).Preload("User", func(tx *gorm.DB) *gorm.DB {
+	err := db.Select("id", "title", "user_id").Order("RAND()").Limit(100).Preload("User", func(tx *gorm.DB) *gorm.DB {
 		return tx.Select("id", "username")
 	}).Find(&randomArticles).Error
 
@@ -60,7 +60,7 @@ func GetArticle(db *gorm.DB, username string, articleId int) (*models.Article, e
 		return nil, err
 	}
 
-	if err := db.Model(&articleLikes).Where("article_id = ?", articleId).Error; err != nil {
+	if err := db.Select("id", "article_id", "counter").Where("article_id = ?", articleId).Find(&articleLikes).Error; err != nil {
 		return nil, err
 	}
 

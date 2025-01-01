@@ -17,9 +17,6 @@ import (
 //	@Summary	Get random article.
 //	@Tags		Articles
 //
-//	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
-//	@Security	BearerToken
-//
 //	@Produce	json
 //	@Router		/articles [get]
 func GetRandomArticles(c *gin.Context) {
@@ -39,9 +36,6 @@ func GetRandomArticles(c *gin.Context) {
 //
 //	@Summary	Get user article.
 //	@Tags		Articles
-//
-//	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
-//	@Security	BearerToken
 //
 //	@Param		limit		query	int		false	"Limit returning value"
 //	@Param		page		query	int		false	"Paging"
@@ -90,11 +84,8 @@ func GetArticles(c *gin.Context) {
 //	@Summary	Get detail article.
 //	@Tags		Articles
 //
-//	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
-//	@Security	BearerToken
-//
 //	@Param		username	path	string	true	"user username"
-//	@Param		id			path	int		true	"user username"
+//	@Param		id			path	int		true	"user id"
 //	@Produce	json
 //	@Router		/articles/{username}/{id} [get]
 func GetArticle(c *gin.Context) {
@@ -204,45 +195,6 @@ func UpdateArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status_code": http.StatusOK, "messsage": "Success to update article"})
-	return
-}
-
-// Delete Article godoc
-//
-//	@Summary	Delete article.
-//	@Tags		Articles
-//
-//	@Param		Authorization	header	string	true	"Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
-//	@Security	BearerToken
-//
-//	@Param		id	path	int	true	"Article id"
-//
-//	@Produce	json
-//	@Router		/articles/{id} [delete]
-func DeleteArticle(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
-	userMap, _ := c.Get("user")
-	articleId, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status_code": http.StatusBadRequest, "messsage": "Article id not found", "errors": err.Error()})
-		return
-	}
-
-	if err := service.DeleteArticle(db, articleId, userMap.(jwt.MapClaims)["id"]); err != nil {
-		switch err.Error() {
-		case "record not found":
-			c.JSON(http.StatusNotFound, gin.H{"status_code": http.StatusNotFound, "messsage": "Article not found"})
-			return
-		case "forbidden delete":
-			c.JSON(http.StatusForbidden, gin.H{"status_code": http.StatusForbidden, "messsage": "You don't have permission to delete this article"})
-			return
-		default:
-			c.JSON(http.StatusInternalServerError, gin.H{"status_code": http.StatusInternalServerError, "messsage": "Failed to delete article"})
-			return
-		}
-	}
-
-	c.JSON(http.StatusNoContent, nil)
 	return
 }
 

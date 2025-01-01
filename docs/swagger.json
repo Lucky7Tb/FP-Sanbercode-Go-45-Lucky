@@ -6,11 +6,6 @@
     "paths": {
         "/articles": {
             "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -18,15 +13,6 @@
                     "Articles"
                 ],
                 "summary": "Get random article.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {}
             },
             "post": {
@@ -138,11 +124,6 @@
         },
         "/articles/{username}": {
             "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -151,13 +132,6 @@
                 ],
                 "summary": "Get user article.",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "Limit returning value",
@@ -183,11 +157,6 @@
         },
         "/articles/{username}/{id}": {
             "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -196,13 +165,6 @@
                 ],
                 "summary": "Get detail article.",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "user username",

@@ -17,13 +17,9 @@ func main() {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	docs.SwaggerInfo.BasePath = "/api"
 
-	if value, ok := os.LookupEnv("ENVIRONMENT"); ok {
-		if value == "DEVELOPMENT" {
-			err := godotenv.Load()
-			if err != nil {
-				panic("Error loading .env file")
-			}
-		}
+	err := godotenv.Load()
+	if err != nil {
+		panic("Error loading .env file")
 	}
 
 	db := config.ConnectDataBase()
